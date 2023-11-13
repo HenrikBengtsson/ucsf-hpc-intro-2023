@@ -11,7 +11,8 @@ format:
   revealjs: 
     preview-links: auto
     theme: [default, custom.scss]
-
+    footer: "Questions at slido.com: #2367446"
+    
 width: 1100
 ---
 
