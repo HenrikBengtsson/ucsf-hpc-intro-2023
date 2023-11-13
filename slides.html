@@ -411,7 +411,8 @@ Henrik Bengtsson
 <section id="goals-for-today" class="title-slide slide level1 center">
 <h1>Goals for today</h1>
 <ul>
-<li>For you to know it is not that hard to get started</li>
+<li><p>For you to know the basics of scripting your analysis</p></li>
+<li><p>For you to know it is not that hard to get started with HPC</p></li>
 </ul>
 <!-- A 25-minute presentation on 2023-11-13 -->
 </section>
@@ -428,6 +429,7 @@ Henrik Bengtsson
 </ul>
 </section>
 
+<section>
 <section id="what-is-a-compute-cluster" class="title-slide slide level1 center">
 <h1>What is a compute cluster?</h1>
 <ul>
@@ -439,9 +441,8 @@ Henrik Bengtsson
 <li><p>Higher total throughput - not necessarily lower latency</p></li>
 </ul>
 </section>
-
-<section id="two-compute-clusters-at-the-ucsf" class="title-slide slide level1 center">
-<h1>Two compute clusters at the UCSF</h1>
+<section id="two-compute-clusters-at-the-ucsf" class="slide level2">
+<h2>Two compute clusters at the UCSF</h2>
 <table>
 <thead>
 <tr class="header">
@@ -498,8 +499,8 @@ Henrik Bengtsson
 </tr>
 <tr class="even">
 <td style="text-align: left;">Software</td>
-<td style="text-align: left;">core + shared + DIY</td>
-<td style="text-align: left;">core + shared + DIY</td>
+<td style="text-align: left;">core + <a href="https://wynton.ucsf.edu/hpc/software/software-repositories.html" data-preview-link="true">shared</a> + DIY</td>
+<td style="text-align: left;">core + <a href="https://www.c4.ucsf.edu/software/software-repositories.html" data-preview-link="true">shared</a> + DIY</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Linux</td>
@@ -524,9 +525,8 @@ Henrik Bengtsson
 </tbody>
 </table>
 </section>
-
-<section id="typical-workflow-using-a-compute-cluster" class="title-slide slide level1 center">
-<h1>Typical workflow using a compute cluster</h1>
+<section id="typical-workflow-using-a-compute-cluster" class="slide level2">
+<h2>Typical workflow using a compute cluster</h2>
 <ol type="1">
 <li>Log in to compute cluster</li>
 <li>Continue by logging in to a development node</li>
@@ -536,209 +536,313 @@ Henrik Bengtsson
 <li>Wait until done</li>
 <li>Look at produced files and logs</li>
 </ol>
+<div class="fragment">
 <div class="terminal">
 <div class="sourceCode" id="cb1" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{ab@notebook}$</span> ssh alice@log1.wynton.ucsf.edu</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@log1}$</span> ssh qb3-dev1</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cd /path/to/amazing_project/</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> emacs analysis.sh</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub analysis.sh</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qstat</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@log1]$</span> ssh dev1</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cd /path/to/amazing_project/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> emacs analysis.sh</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub analysis.sh</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cat analysis.o90303</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cat analysis.o90303</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+</section></section>
+<section>
+<section id="scripts" class="title-slide slide level1 center">
+<h1>Scripts</h1>
+<p>Basically everything you will do on a compute cluster involves scripted instructions.</p>
 </section>
-
-<section id="scripts-are-text-files-with-commands" class="title-slide slide level1 center">
-<h1>Scripts are text files with commands</h1>
+<section id="scripts-are-easy" class="slide level2">
+<h2>Scripts are easy</h2>
 <ul>
 <li>Scripts are text files with commands that are executed line by line</li>
 <li>You can edit scripts in a text editor</li>
 <li>Scripts are run by an interpreter, e.g.&nbsp;Bash, R, Python, …</li>
 </ul>
-<p>Example: A <em>shell</em> script <code>hello.sh</code> containing:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="bu">echo</span> <span class="st">"How are you?"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We can run these two lines using:</p>
+<p>For example, if type <code>date</code> at the command-line prompt and press ENTER, the machine will reply with the current timestamp, and then wait for your next command:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb3" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash hello.sh</span>
+<div class="sourceCode" id="cb2" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> date</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Mon</span> Nov 13 11:36:33 PM PST 2023</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use the <code>echo</code> command to output a message, e.g.</p>
+<div class="terminal">
+<div class="sourceCode" id="cb3" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> echo <span class="st">"Hello world"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-
-<section id="comment-you-code-for-yourself-and-others" class="title-slide slide level1 center">
-<h1>Comment you code for yourself and others</h1>
-<p>All scripting language support adding <em>comments</em> in the code. It’s an exellent way to make notes for your future self, for you collaborators, and for that researcher who will build on your work in two years from now. <strong>Do yourself a favor and add such notes!</strong></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># This script says hello to the world</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># Author: Alice</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># Display current date in format yyyy-mm-dd</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="fu">date</span> <span class="at">--iso-8601</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="scripts-help-us-to-repeat-similar-tasks-many-times" class="slide level2">
+<h2>Scripts help us to repeat similar tasks many times</h2>
+<p>Instead of manually retyping the commands manually, we can put them in a text file using our favorite text editor. Here is a <em>shell</em> script <code>hello.sh</code> that contain the above two commands:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can run these two lines using the <code>bash</code> command:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb5" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Mon</span> Nov 13 11:37:43 PM PST 2023</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can call any number of times we’d like, e.g.</p>
+<div class="terminal">
+<div class="sourceCode" id="cb6" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Mon</span> Nov 13 11:38:05 PM PST 2023</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tip-comment-you-code-for-yourself-and-others" class="slide level2">
+<h2>Tip: Comment you code for yourself and others</h2>
+<p>All scripting language support adding <em>comments</em> in the code. It’s an excellent way to make notes for your future self, for you collaborators, and for that researcher who will build on your work in two years from now. <strong>Do yourself a favor and add such notes!</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># This script says hello to the world</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># Author: Alice</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co"># Display current timestamp in format yyyy-mm-dd hh:mm:ss</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">date</span> +<span class="st">"%F %T"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="fragment">
 <p>Comments are ignored when script is run, so still the same result;</p>
 <div class="terminal">
-<div class="sourceCode" id="cb5" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash hello.sh</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span> 11:43:03</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section>
-
-<section id="running-a-script-on-a-compute-cluster" class="title-slide slide level1 center">
-<h1>Running a script on a compute cluster</h1>
-<p>“Running a script on a compute cluster”</p>
-<p><span class="math inline">\(&lt;=\)</span> similar to <span class="math inline">\(=&gt;\)</span></p>
-<p>“Queue the script to be run on the next available compute nodes”</p>
-<p><br> <br></p>
-<p>We’re going to focus on shell scripts and how to run them on a compute cluster.</p>
-</section>
-
+</section></section>
 <section>
 <section id="rule-of-thumb-if-it-runs-locally-it-runs-on-the-cluster" class="title-slide slide level1 center">
 <h1>Rule of thumb:<br>If it runs locally, it runs on the cluster</h1>
 
 </section>
-<section id="on-the-current-machine" class="slide level2">
-<h2>On the current machine</h2>
-<div class="terminal">
-<div class="sourceCode" id="cb6" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash hello.sh</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="running-a-script-on-a-compute-cluster" class="slide level2">
+<h2>Running a script on a compute cluster</h2>
+<blockquote>
+<p>“Running a script on a compute cluster”</p>
+</blockquote>
+<p><em>is similar to</em></p>
+<blockquote>
+<p>“Queue the script to be run on the next available compute node”</p>
+</blockquote>
+<p><br> <br></p>
+<p>We’re going to focus on shell scripts and how to run them on a compute cluster.</p>
 </section>
-<section id="on-the-cluster" class="slide level2">
-<h2>On the cluster</h2>
+<section id="run-on-the-current-machine" class="slide level2">
+<h2>Run on the current machine</h2>
+<p>We can run the script manually at the command line:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb7" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub <span class="at">-cwd</span> hello.sh</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8522736 <span class="er">(</span><span class="st">"hello.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span> 11:45:14</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="fragment">
+<p>We can run it multiple times:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb8" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qstat</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8522736</span> 0.00000 hello.sh alice  qw    11/02/2022 14:25:17                    1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span> 11:45:32</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>… over and over this way:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb11" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span> 11:45:51</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>Note, the above run <em>sequentially</em>, one after each other.</p>
 </div>
 </section></section>
-<section id="job-is-running---now-we-need-to-wait" class="title-slide slide level1 center">
-<h1>Job is running - now we need to wait …</h1>
+<section>
+<section id="run-on-the-cluster-of-compute-nodes" class="title-slide slide level1 center">
+<h1>Run on the cluster (of compute nodes)</h1>
+<p>Instead of running it on the single machine we’re logged into, we can run it on any of the hundreds of machines that is available.</p>
 <div class="fragment">
+<p>To do this, we use <code>qsub</code> to <strong>submit it to a job queue</strong>:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb9" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qstat</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8522736</span> 0.07069 hello.sh alice  r     11/02/2022 14:28:02 long.q@msg-iogpu6  1        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub <span class="at">-cwd</span> hello.sh</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8522736 <span class="er">(</span><span class="st">"hello.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div class="fragment">
-<div class="terminal">
-<div class="sourceCode" id="cb10" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qstat</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Hmm… where are the results?</p>
 </div>
 <div class="fragment">
+<p>Here I use command-line option <code>-cwd</code> to tell it to run <code>hello.sh</code> in the current working directory. <strong>You almost always want to do this</strong>.</p>
+</div>
+<div class="fragment">
+<p>Then we wait for it to get started. We can use <code>qstat</code> to see the <em>queue status</em> of our jobs:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb11" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cat hello.sh.o8522736</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8522736</span> 0.00000 hello.sh alice  qw    11/13/2023 11:37:17                    1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here <code>qw</code> means <strong>queued</strong> and <strong>waiting</strong> for a machine to become available.</p>
+</div>
+</section>
+<section id="job-is-started-by-scheduler" class="slide level2">
+<h2>Job is started by scheduler</h2>
+<p>The job scheduler will send jobs in the queue to available machines. The waiting time depends on how many users and jobs are already running and queued. It also depends on how many resources your job need.</p>
+<div class="fragment">
+<div class="terminal">
+<div class="sourceCode" id="cb14" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8522736</span> 0.07069 hello.sh alice  r     11/13/2023 11:38:02 long.q@msg-iogpu6  1        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here <code>r</code> means <strong>running</strong>. Now we need to wait …</p>
+</div>
+<div class="fragment">
+<div class="terminal">
+<div class="sourceCode" id="cb15" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Job is no longer listed, which means it finished.</p>
+</div>
+<div class="fragment">
+<p>But, now what? Where are the results?</p>
+</div>
+<div class="fragment">
+<div class="terminal">
+<div class="sourceCode" id="cb16" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cat hello.sh.o8522736</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2023-11-13</span> 11:46:54</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
-
-<section id="set-default-qsub-options-inside-script" class="title-slide slide level1 center">
-<h1>Set default qsub options inside script</h1>
-<p><em>A job scheduler directive</em>: A special formatted comment starting with <code>#$</code> followed by qsub options.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">#$ -cwd    # run in current working directory</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="co"># This script says hello to the world</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="co"># Author: Alice</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="co"># Date: 2022-11-01</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a></span>
-<span id="cb12-7"><a href="#cb12-7"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="bu">echo</span> <span class="st">"How are you?"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This way we can just do:</p>
-<div class="terminal">
-<div class="sourceCode" id="cb13" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-
-<section id="run-an-r-script-on-the-job-scheduler" class="title-slide slide level1 center">
-<h1>Run an R script <del>on the job scheduler</del></h1>
-<p><code>random.R</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># This R script outputs a random number</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="co"># Author: Alice</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="co"># Date: 2022-11-01</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="fu">cat</span>(<span class="st">"A random number in [0,1]:"</span>, <span class="fu">runif</span>(<span class="dv">1</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="fragment">
-<div class="terminal">
-<div class="sourceCode" id="cb15" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> Rscript random.R</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.09091985</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="terminal">
-<div class="sourceCode" id="cb16" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> Rscript random.R</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.12491344</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section>
-
-<section id="run-an-r-script-on-the-job-scheduler-via-a-shell-script" class="title-slide slide level1 center">
-<h1>Run an R script <del>on the job scheduler</del> via a shell script</h1>
-<p><code>random.sh</code>:</p>
+<section id="tip-set-the-qsub-options-inside-script" class="slide level2">
+<h2>Tip: Set the qsub options inside script</h2>
+<p><em>A job scheduler directive</em>: A specially formatted comment starting with <code>#$</code> followed by qsub options.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="co">#$ -cwd    # run in current working directory</span></span>
 <span id="cb17-2"><a href="#cb17-2"></a></span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="co"># This script calls the R hello script</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="co"># This script says hello to the world</span></span>
 <span id="cb17-4"><a href="#cb17-4"></a><span class="co"># Author: Alice</span></span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="co"># Date: 2022-11-01</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co"># Date: 2023-11-12</span></span>
 <span id="cb17-6"><a href="#cb17-6"></a></span>
-<span id="cb17-7"><a href="#cb17-7"></a><span class="ex">Rscript</span> random.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a></span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="co"># Display current timestamp in format yyyy-mm-dd hh:mm:ss</span></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="fu">date</span> +<span class="st">"%F %T"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This way we can just do:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb18" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
+<section>
+<section id="running-an-r-script" class="title-slide slide level1 center">
+<h1>Running an R script</h1>
+<p>To run a non-shell script, for instance an R or a Python script, on a compute cluster, we need to create a little helper <em>shell</em> script that calls our R or Python script.</p>
+</section>
+<section id="run-an-r-script-on-the-job-scheduler" class="slide level2">
+<h2>Run an R script <del>on the job scheduler</del></h2>
+<p><code>random.R</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># This R script outputs a random number</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co"># Author: Alice</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="co"># Date: 2023-11-12</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="fu">cat</span>(<span class="st">"A random number in [0,1]:"</span>, <span class="fu">runif</span>(<span class="dv">1</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="fragment">
+<p>To run this from the command line, we can use <code>Rscript</code>:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb20" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> Rscript random.R</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.09091985</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>Like shell scripts, we can run R scripts many times:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb21" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> Rscript random.R</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.12491344</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="run-an-r-script-on-the-job-scheduler-via-a-shell-script" class="slide level2">
+<h2>Run an R script <del>on the job scheduler</del> via a shell script</h2>
+<p><code>random.sh</code>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">#$ -cwd    # run in current working directory</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a></span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="co"># This shell script calls the random.R script</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="co"># Author: Alice</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="co"># Date: 2023-11-12</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a></span>
+<span id="cb22-7"><a href="#cb22-7"></a><span class="ex">Rscript</span> random.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="fragment">
 <p>This we can call as:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb18" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash random.sh</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.4785869</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash random.sh</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.4785869</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
-
-<section id="run-an-r-script-on-the-job-scheduler-1" class="title-slide slide level1 center">
-<h1>Run an R script <em>on the job scheduler</em></h1>
-<p>Submit <code>hello.sh</code> <em>twice</em> to the job scheduler:</p>
+<section id="run-an-r-script-on-the-job-scheduler-1" class="slide level2">
+<h2>Run an R script <em>on the job scheduler</em></h2>
+<p>With the <code>random.sh</code> wrapper script, we can now run our R script <code>random.R</code> on the cluster.</p>
+<p>For the sake of it, let’s submit it <em>twice</em> to the job scheduler:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb19" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub random.sh</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8529912 <span class="er">(</span><span class="st">"random.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub random.sh</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8529913 <span class="er">(</span><span class="st">"random.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub random.sh</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8529912 <span class="er">(</span><span class="st">"random.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub random.sh</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8529913 <span class="er">(</span><span class="st">"random.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
+<p>As usual, it will take some time before the jobs starts:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb20" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qstat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<div class="fragment">
-<div class="terminal">
-<div class="sourceCode" id="cb21" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cat random.sh.o8529912</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.1704674</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cat random.sh.o8529913</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.9229252 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8529912</span> 0.07069 random.sh alice qw    11/13/2023 11:28:02                    1        </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">8529913</span> 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
-
+<section id="run-an-r-script-on-the-job-scheduler-2" class="slide level2">
+<h2>Run an R script <em>on the job scheduler</em></h2>
+<p>But eventually, one starts:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb26" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8529912</span> 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">8529913</span> 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p>And then the other:</p>
+<div class="terminal">
+<div class="sourceCode" id="cb27" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qstat</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">job-ID</span>  prior   name     user   state submit/start at     queue              slots</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">----------------------------------------------------------------------------------</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">8529912</span> 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">8529913</span> 0.07069 random.sh alice r     11/13/2023 11:28:54 long.q@msg-id19    1        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note how the two jobs run on two different machines.</p>
+</div>
+</section>
+<section id="run-an-r-script-on-the-job-scheduler-3" class="slide level2">
+<h2>Run an R script <em>on the job scheduler</em></h2>
+<p>When the jobs are finished, any output generated by the script is stored in the corresponding <code>random.sh.o&lt;job_id&gt;</code> output file.</p>
+<div class="terminal">
+<div class="sourceCode" id="cb28" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cat random.sh.o8529912</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.1704674</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cat random.sh.o8529913</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> random number in <span class="pp">[</span><span class="ss">0,1</span><span class="pp">]</span>: 0.9229252 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section>
 <section>
 <section id="how-to-ask-for-help" class="title-slide slide level1 center">
 <h1>How to ask for help</h1>
 <ul>
-<li><p><a href="https://wynton.ucsf.edu/" data-preview-link="true">https://wynton.ucsf.edu/</a></p></li>
+<li><p>Community Slack (<strong>faster</strong>)</p></li>
+<li><p>Email to the cluster team (<strong>slower</strong>, because fewer people to answer questions)</p></li>
 <li><p>Rule #1: There is no such thing as “a stupid question”!!!</p></li>
 <li><p>Help the helper help you</p></li>
 <li><p>Better with too much details than too little</p></li>
@@ -751,7 +855,18 @@ Henrik Bengtsson
 <ul>
 <li><p>Overload development nodes - or use more job resources than you request</p></li>
 <li><p>When you’re sloppy or lazy - make sure to read help online, etc.</p></li>
-<li><p>more seriously, sysadms are great folks too, so never hestiate to ask for help or pointers</p></li>
+<li><p>More seriously, sysadms are great folks too, so never hesitate to ask for help or pointers</p></li>
+</ul>
+</section>
+<section id="even-better-is-to-ask-your-peers" class="slide level2">
+<h2>Even better is to ask your peers</h2>
+<ul>
+<li><p><a href="https://wynton.ucsf.edu/" data-preview-link="true">Wynton</a> has 1,800 users and <a href="https://www.c4.ucsf.edu/" data-preview-link="true">C4</a> has 300 users - many of them on Slack</p></li>
+<li><p>The Slack channel is welcoming and friendly</p></li>
+<li><p>Lots of users are willing to help out</p></li>
+<li><p>There is almost certainly at least one other user who have the same question as you</p></li>
+<li><p>Sooner than you think, you might be the one helping someone else out</p></li>
+<li><p>Again, there are no “silly” questions - it’s only silly if you don’t ask!</p></li>
 </ul>
 </section></section>
 <section id="appendix-random-slides" class="title-slide slide level1 center" data-visibility="uncounted">
@@ -762,30 +877,30 @@ Henrik Bengtsson
 <section id="a1.-scripts---r" class="title-slide slide level1 center" data-visibility="uncounted">
 <h1>A1. Scripts - R</h1>
 <p>Example: An <em>R</em> script <code>hello.R</code> containing:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode numberSource txt number-lines code-with-copy"><code class="sourceCode default"><span id="cb22-1"><a href="#cb22-1"></a>cat("Hello world\n")</span>
-<span id="cb22-2"><a href="#cb22-2"></a>cat("How are you?\n")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode numberSource txt number-lines code-with-copy"><code class="sourceCode default"><span id="cb29-1"><a href="#cb29-1"></a>cat("Hello world\n")</span>
+<span id="cb29-2"><a href="#cb29-2"></a>cat("How are you?\n")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can run these two lines using:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb23" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> Rscript hello.R</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> Rscript hello.R</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
 <section id="a1.-scripts---python" class="title-slide slide level1 center" data-visibility="uncounted">
 <h1>A1. Scripts - Python</h1>
 <p>Example: A Python script <code>hello.py</code> containing:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode numberSource txt number-lines code-with-copy"><code class="sourceCode default"><span id="cb24-1"><a href="#cb24-1"></a>print("Hello world\n")</span>
-<span id="cb24-2"><a href="#cb24-2"></a>print("How are you?\n")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode numberSource txt number-lines code-with-copy"><code class="sourceCode default"><span id="cb31-1"><a href="#cb31-1"></a>print("Hello world\n")</span>
+<span id="cb31-2"><a href="#cb31-2"></a>print("How are you?\n")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can run these two lines using:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb25" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> python hello.py</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> python hello.py</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
@@ -793,33 +908,33 @@ Henrik Bengtsson
 <h1>A1. The filename extension reveals the scripting language</h1>
 <p>Common filename extensions for scripting languages:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb26" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ls <span class="at">-1</span> hello.<span class="pp">*</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.R</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.py</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.pl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ls <span class="at">-1</span> hello.<span class="pp">*</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.R</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.py</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.pl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The extension is non-critical - it’s only for us humans to keep track. A script could be name just <code>hello</code>, but then we have to peek into the file to figure out what scripting language is used before we can call it;</p>
 <div class="terminal">
-<div class="sourceCode" id="cb27" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash hello</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
 <section id="a2.-shebangs---make-your-script-look-like-any-other-program" class="title-slide slide level1 center" data-visibility="uncounted">
 <h1>A2. Shebangs - make your script look like any other program</h1>
 <p>A shebang is a script <em>comment</em> at the first line with a specific format:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1"></a><span class="co"># !/usr/bin/env bash</span></span>
-<span id="cb28-2"><a href="#cb28-2"></a></span>
-<span id="cb28-3"><a href="#cb28-3"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
-<span id="cb28-4"><a href="#cb28-4"></a><span class="bu">echo</span> <span class="st">"How are you?"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1"></a><span class="co"># !/usr/bin/env bash</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a></span>
+<span id="cb35-3"><a href="#cb35-3"></a><span class="bu">echo</span> <span class="st">"Hello world"</span></span>
+<span id="cb35-4"><a href="#cb35-4"></a><span class="bu">echo</span> <span class="st">"How are you?"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The “-bang” in “shebang” is because <code>!</code> is pronounced “bang” in the compute world.</p>
 <p>The script still works as usual (because it is just a comment):</p>
 <div class="terminal">
-<div class="sourceCode" id="cb29" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash hello.sh</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash hello.sh</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
@@ -827,19 +942,19 @@ Henrik Bengtsson
 <h1>A2. Shebangs - make your script look like any other program</h1>
 <p>Now, if we set the executable flag (<code>x</code>) in this file:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb30" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ls <span class="at">-l</span> hello.sh</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-r--r--</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> chmod ugo+x hello.sh</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ls <span class="at">-l</span> hello.sh</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">-rwxr-xr-x</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ls <span class="at">-l</span> hello.sh</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-r--r--</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> chmod ugo+x hello.sh</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ls <span class="at">-l</span> hello.sh</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="ex">-rwxr-xr-x</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>we can call the script as:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb31" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ./hello.sh</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ./hello.sh</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
@@ -850,19 +965,19 @@ Henrik Bengtsson
 </ul>
 <p>To output to current working directory, use <code>-cwd</code>.</p>
 <div class="terminal">
-<div class="sourceCode" id="cb32" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> qsub <span class="at">-cwd</span> hello.sh</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8522746 <span class="er">(</span><span class="st">"hello.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> qsub <span class="at">-cwd</span> hello.sh</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> job 8522746 <span class="er">(</span><span class="st">"hello.sh"</span><span class="kw">)</span> <span class="ex">has</span> been submitted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then we keep checking <code>qstat</code> to see when it’s done.</p>
 <div class="fragment">
 <div class="terminal">
-<div class="sourceCode" id="cb33" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ls</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh.o8522746</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cat hello.sh.o8522746</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ls</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hello.sh.o8522746</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cat hello.sh.o8522746</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
@@ -870,22 +985,23 @@ Henrik Bengtsson
 <section id="a4.-put-your-common-scripts-in-bin" class="title-slide slide level1 center" data-visibility="uncounted">
 <h1>A4. Put your common scripts in ~/bin/</h1>
 <div class="terminal">
-<div class="sourceCode" id="cb34" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> mkdir ~/bin</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> cp hello.sh ~/bin</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-l</span> ~/bin/hello.sh</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-rwxr-xr-x</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> mkdir ~/bin</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> cp hello.sh ~/bin</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-l</span> ~/bin/hello.sh</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-rwxr-xr-x</span> 1 alice alice 59 Oct  1 22:35 hello.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>we can now call the script as:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb35" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> bash ~/bin/hello.sh</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> bash ~/bin/hello.sh</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="fragment">
+<p>And, because of the shebang, we don’t have to call it via <code>bash</code>:</p>
 <div class="terminal">
-<div class="sourceCode" id="cb36" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">{alice@dev1}$</span> ~/bin/hello.sh</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43" data-code-line-numbers="false"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[alice@dev1]$</span> ~/bin/hello.sh</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello</span> world</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="ex">How</span> are you<span class="pp">?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <div class="footer footer-default">

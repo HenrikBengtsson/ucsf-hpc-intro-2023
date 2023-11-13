@@ -1,23 +1,114 @@
 [
   {
-    "objectID": "slides.html#on-the-current-machine",
-    "href": "slides.html#on-the-current-machine",
+    "objectID": "slides.html#two-compute-clusters-at-the-ucsf",
+    "href": "slides.html#two-compute-clusters-at-the-ucsf",
     "title": "High-Performance Computing (HPC)",
-    "section": "On the current machine",
-    "text": "On the current machine\n\n{alice@dev1}$ bash hello.sh\nHello world\nHow are you?"
+    "section": "Two compute clusters at the UCSF",
+    "text": "Two compute clusters at the UCSF\n\n\n\n\nWynton HPC\nC4\n\n\n\n\nSince\n2018\n2020\n\n\nFor whom?\nAll of UCSF\nCancer Center affiliates\n\n\nNumber of users\n~1,800\n~300\n\n\nNumber of computers\n~500\n~40\n\n\nNumber of cores\n~17,500\n~2,800\n\n\nMemory (RAM)\n48 – 1,512 GiB RAM\n32 – 1,024 GiB RAM\n\n\nFree disk space\n500 GB/user\n1,000 GB/user\n\n\nCommunal computers\n100%\n25%\n\n\nPaying contributors\nVIP priority\ndedicated machines\n\n\nSoftware\ncore + shared + DIY\ncore + shared + DIY\n\n\nLinux\nRocky 8\nCentOS 7.9\n\n\nBackup\nno (on the roadmap)\nhome directory (only)\n\n\nGPUs\nyes\nno\n\n\nDocumentation\nhttps://wynton.ucsf.edu/\nhttps://www.c4.ucsf.edu/"
   },
   {
-    "objectID": "slides.html#on-the-cluster",
-    "href": "slides.html#on-the-cluster",
+    "objectID": "slides.html#typical-workflow-using-a-compute-cluster",
+    "href": "slides.html#typical-workflow-using-a-compute-cluster",
     "title": "High-Performance Computing (HPC)",
-    "section": "On the cluster",
-    "text": "On the cluster\n\n{alice@dev1}$ qsub -cwd hello.sh\nYour job 8522736 (\"hello.sh\") has been submitted\n\n\n{alice@dev1}$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8522736 0.00000 hello.sh alice  qw    11/02/2022 14:25:17                    1"
+    "section": "Typical workflow using a compute cluster",
+    "text": "Typical workflow using a compute cluster\n\nLog in to compute cluster\nContinue by logging in to a development node\nGo to project folder\nEdit scripts\nSubmit one or more scripts to job queue\nWait until done\nLook at produced files and logs\n\n\n\n{ab@notebook}$ ssh alice@log1.wynton.ucsf.edu\n[alice@log1]$ ssh dev1\n[alice@dev1]$ cd /path/to/amazing_project/\n[alice@dev1]$ emacs analysis.sh\n[alice@dev1]$ qsub analysis.sh\n[alice@dev1]$ qstat\n...\n[alice@dev1]$ cat analysis.o90303"
+  },
+  {
+    "objectID": "slides.html#scripts-are-easy",
+    "href": "slides.html#scripts-are-easy",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Scripts are easy",
+    "text": "Scripts are easy\n\nScripts are text files with commands that are executed line by line\nYou can edit scripts in a text editor\nScripts are run by an interpreter, e.g. Bash, R, Python, …\n\nFor example, if type date at the command-line prompt and press ENTER, the machine will reply with the current timestamp, and then wait for your next command:\n\n[alice@dev1]$ date\nMon Nov 13 11:36:33 PM PST 2023\n\n[alice@dev1]$\n\nWe can use the echo command to output a message, e.g.\n\n[alice@dev1]$ echo \"Hello world\"\nHello world\n\n[alice@dev1]$"
+  },
+  {
+    "objectID": "slides.html#scripts-help-us-to-repeat-similar-tasks-many-times",
+    "href": "slides.html#scripts-help-us-to-repeat-similar-tasks-many-times",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Scripts help us to repeat similar tasks many times",
+    "text": "Scripts help us to repeat similar tasks many times\nInstead of manually retyping the commands manually, we can put them in a text file using our favorite text editor. Here is a shell script hello.sh that contain the above two commands:\necho \"Hello world\"\ndate\nWe can run these two lines using the bash command:\n\n[alice@dev1]$ bash hello.sh\nHello world\nMon Nov 13 11:37:43 PM PST 2023\n\n[alice@dev1]$\n\nWe can call any number of times we’d like, e.g.\n\n[alice@dev1]$ bash hello.sh\nHello world\nMon Nov 13 11:38:05 PM PST 2023\n\n[alice@dev1]$"
+  },
+  {
+    "objectID": "slides.html#tip-comment-you-code-for-yourself-and-others",
+    "href": "slides.html#tip-comment-you-code-for-yourself-and-others",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Tip: Comment you code for yourself and others",
+    "text": "Tip: Comment you code for yourself and others\nAll scripting language support adding comments in the code. It’s an excellent way to make notes for your future self, for you collaborators, and for that researcher who will build on your work in two years from now. Do yourself a favor and add such notes!\n# This script says hello to the world\n# Author: Alice\n\necho \"Hello world\"\n\n# Display current timestamp in format yyyy-mm-dd hh:mm:ss\ndate +\"%F %T\"\n\nComments are ignored when script is run, so still the same result;\n\n[alice@dev1]$ bash hello.sh\nHello world\n2023-11-13 11:43:03"
+  },
+  {
+    "objectID": "slides.html#running-a-script-on-a-compute-cluster",
+    "href": "slides.html#running-a-script-on-a-compute-cluster",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Running a script on a compute cluster",
+    "text": "Running a script on a compute cluster\n\n“Running a script on a compute cluster”\n\nis similar to\n\n“Queue the script to be run on the next available compute node”\n\n \nWe’re going to focus on shell scripts and how to run them on a compute cluster."
+  },
+  {
+    "objectID": "slides.html#run-on-the-current-machine",
+    "href": "slides.html#run-on-the-current-machine",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run on the current machine",
+    "text": "Run on the current machine\nWe can run the script manually at the command line:\n\n[alice@dev1]$ bash hello.sh\nHello world\n2023-11-13 11:45:14\n\n\nWe can run it multiple times:\n\n[alice@dev1]$ bash hello.sh\nHello world\n2023-11-13 11:45:32\n\n\n\n… over and over this way:\n\n[alice@dev1]$ bash hello.sh\nHello world\n2023-11-13 11:45:51\n\n\n\nNote, the above run sequentially, one after each other."
+  },
+  {
+    "objectID": "slides.html#job-is-started-by-scheduler",
+    "href": "slides.html#job-is-started-by-scheduler",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Job is started by scheduler",
+    "text": "Job is started by scheduler\nThe job scheduler will send jobs in the queue to available machines. The waiting time depends on how many users and jobs are already running and queued. It also depends on how many resources your job need.\n\n\n[alice@dev1]$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8522736 0.07069 hello.sh alice  r     11/13/2023 11:38:02 long.q@msg-iogpu6  1        \n\nHere r means running. Now we need to wait …\n\n\n\n[alice@dev1]$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n\nJob is no longer listed, which means it finished.\n\n\nBut, now what? Where are the results?\n\n\n\n[alice@dev1]$ cat hello.sh.o8522736\nHello world\n2023-11-13 11:46:54"
+  },
+  {
+    "objectID": "slides.html#tip-set-the-qsub-options-inside-script",
+    "href": "slides.html#tip-set-the-qsub-options-inside-script",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Tip: Set the qsub options inside script",
+    "text": "Tip: Set the qsub options inside script\nA job scheduler directive: A specially formatted comment starting with #$ followed by qsub options.\n#$ -cwd    # run in current working directory\n\n# This script says hello to the world\n# Author: Alice\n# Date: 2023-11-12\n\necho \"Hello world\"\n\n# Display current timestamp in format yyyy-mm-dd hh:mm:ss\ndate +\"%F %T\"\nThis way we can just do:\n\n[alice@dev1]$ qsub hello.sh"
+  },
+  {
+    "objectID": "slides.html#run-an-r-script-on-the-job-scheduler",
+    "href": "slides.html#run-an-r-script-on-the-job-scheduler",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run an R script on the job scheduler",
+    "text": "Run an R script on the job scheduler\nrandom.R:\n# This R script outputs a random number\n# Author: Alice\n# Date: 2023-11-12\n\ncat(\"A random number in [0,1]:\", runif(1), \"\\n\")\n\nTo run this from the command line, we can use Rscript:\n\n[alice@dev1]$ Rscript random.R\nA random number in [0,1]: 0.09091985\n\n\n\nLike shell scripts, we can run R scripts many times:\n\n[alice@dev1]$ Rscript random.R\nA random number in [0,1]: 0.12491344"
+  },
+  {
+    "objectID": "slides.html#run-an-r-script-on-the-job-scheduler-via-a-shell-script",
+    "href": "slides.html#run-an-r-script-on-the-job-scheduler-via-a-shell-script",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run an R script on the job scheduler via a shell script",
+    "text": "Run an R script on the job scheduler via a shell script\nrandom.sh:\n#$ -cwd    # run in current working directory\n\n# This shell script calls the random.R script\n# Author: Alice\n# Date: 2023-11-12\n\nRscript random.R\n\nThis we can call as:\n\n[alice@dev1]$ bash random.sh\nA random number in [0,1]: 0.4785869"
+  },
+  {
+    "objectID": "slides.html#run-an-r-script-on-the-job-scheduler-1",
+    "href": "slides.html#run-an-r-script-on-the-job-scheduler-1",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run an R script on the job scheduler",
+    "text": "Run an R script on the job scheduler\nWith the random.sh wrapper script, we can now run our R script random.R on the cluster.\nFor the sake of it, let’s submit it twice to the job scheduler:\n\n[alice@dev1]$ qsub random.sh\nYour job 8529912 (\"random.sh\") has been submitted\n\n[alice@dev1]$ qsub random.sh\nYour job 8529913 (\"random.sh\") has been submitted\n\n\nAs usual, it will take some time before the jobs starts:\n\n[alice@dev1]$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8529912 0.07069 random.sh alice qw    11/13/2023 11:28:02                    1        \n8529913 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1"
+  },
+  {
+    "objectID": "slides.html#run-an-r-script-on-the-job-scheduler-2",
+    "href": "slides.html#run-an-r-script-on-the-job-scheduler-2",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run an R script on the job scheduler",
+    "text": "Run an R script on the job scheduler\nBut eventually, one starts:\n\n[alice@dev1]$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8529912 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        \n8529913 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1        \n\n\nAnd then the other:\n\n[alice@dev1]$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8529912 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        \n8529913 0.07069 random.sh alice r     11/13/2023 11:28:54 long.q@msg-id19    1        \n\nNote how the two jobs run on two different machines."
+  },
+  {
+    "objectID": "slides.html#run-an-r-script-on-the-job-scheduler-3",
+    "href": "slides.html#run-an-r-script-on-the-job-scheduler-3",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Run an R script on the job scheduler",
+    "text": "Run an R script on the job scheduler\nWhen the jobs are finished, any output generated by the script is stored in the corresponding random.sh.o&lt;job_id&gt; output file.\n\n[alice@dev1]$ cat random.sh.o8529912\nA random number in [0,1]: 0.1704674\n\n[alice@dev1]$ cat random.sh.o8529913\nA random number in [0,1]: 0.9229252"
   },
   {
     "objectID": "slides.html#what-makes-a-system-administrator-grumpy",
     "href": "slides.html#what-makes-a-system-administrator-grumpy",
     "title": "High-Performance Computing (HPC)",
     "section": "What makes a system administrator grumpy",
-    "text": "What makes a system administrator grumpy\n\nOverload development nodes - or use more job resources than you request\nWhen you’re sloppy or lazy - make sure to read help online, etc.\nmore seriously, sysadms are great folks too, so never hestiate to ask for help or pointers"
+    "text": "What makes a system administrator grumpy\n\nOverload development nodes - or use more job resources than you request\nWhen you’re sloppy or lazy - make sure to read help online, etc.\nMore seriously, sysadms are great folks too, so never hesitate to ask for help or pointers"
+  },
+  {
+    "objectID": "slides.html#even-better-is-to-ask-your-peers",
+    "href": "slides.html#even-better-is-to-ask-your-peers",
+    "title": "High-Performance Computing (HPC)",
+    "section": "Even better is to ask your peers",
+    "text": "Even better is to ask your peers\n\nWynton has 1,800 users and C4 has 300 users - many of them on Slack\nThe Slack channel is welcoming and friendly\nLots of users are willing to help out\nThere is almost certainly at least one other user who have the same question as you\nSooner than you think, you might be the one helping someone else out\nAgain, there are no “silly” questions - it’s only silly if you don’t ask!"
   }
 ]
