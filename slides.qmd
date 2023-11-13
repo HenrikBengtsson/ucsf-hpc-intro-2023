@@ -18,7 +18,10 @@ width: 1100
 
 # Goals for today
 
-* For you to know it is not that hard to get started
+* For you to know the basics of scripting your analysis
+
+* For you to know it is not that hard to get started with HPC
+
 
 
 <!-- A 25-minute presentation on 2023-11-13 -->
@@ -57,7 +60,7 @@ width: 1100
 
 
 
-# Two compute clusters at the UCSF
+## Two compute clusters at the UCSF
 
 |                     | Wynton HPC                 | C4                         |
 |:--------------------|:---------------------------|:---------------------------|
@@ -70,7 +73,7 @@ width: 1100
 | Free disk space     | 500 GB/user                | 1,000 GB/user              |
 | Communal computers  | 100%                       | 25%                        |
 | Paying contributors | VIP priority               | dedicated machines         |
-| Software            | core + shared + DIY        | core + shared + DIY        |
+| Software            | core + [shared](https://wynton.ucsf.edu/hpc/software/software-repositories.html){preview-link="true"} + DIY        | core + [shared](https://www.c4.ucsf.edu/software/software-repositories.html){preview-link="true"} + DIY        |
 | Linux               | Rocky 8                    | CentOS 7.9                 |
 | Backup              | no (on the roadmap)        | home directory (only)      |
 | GPUs                | yes                        | no                         |
@@ -78,7 +81,7 @@ width: 1100
 
 
 
-# Typical workflow using a compute cluster
+## Typical workflow using a compute cluster
 
 1. Log in to compute cluster
 2. Continue by logging in to a development node
@@ -88,47 +91,96 @@ width: 1100
 6. Wait until done
 7. Look at produced files and logs
 
+. . .
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
 {ab@notebook}$ ssh alice@log1.wynton.ucsf.edu
-{alice@log1}$ ssh qb3-dev1
-{alice@dev1}$ cd /path/to/amazing_project/
-{alice@dev1}$ emacs analysis.sh
-{alice@dev1}$ qsub analysis.sh
-{alice@dev1}$ qstat
+[alice@log1]$ ssh dev1
+[alice@dev1]$ cd /path/to/amazing_project/
+[alice@dev1]$ emacs analysis.sh
+[alice@dev1]$ qsub analysis.sh
+[alice@dev1]$ qstat
 ...
-{alice@dev1}$ cat analysis.o90303
+[alice@dev1]$ cat analysis.o90303
 ```
 :::
 
 
-# Scripts are text files with commands
+# Scripts
+
+Basically everything you will do on a compute cluster involves
+scripted instructions.
+
+## Scripts are easy
 
 * Scripts are text files with commands that are executed line by line
 * You can edit scripts in a text editor
 * Scripts are run by an interpreter, e.g. Bash, R, Python, ...
 
-Example: A _shell_ script `hello.sh` containing:
-
-```sh
-echo "Hello world"
-echo "How are you?"
-```
-
-We can run these two lines using:
+For example, if type `date` at the command-line prompt and press
+ENTER, the machine will reply with the current timestamp, and then
+wait for your next command:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash hello.sh
-Hello world
-How are you?
+[alice@dev1]$ date
+Mon Nov 13 11:36:33 PM PST 2023
 
-{alice@dev1}$
+[alice@dev1]$
 ```
 :::
 
-# Comment you code for yourself and others
+We can use the `echo` command to output a message, e.g.
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ echo "Hello world"
+Hello world
+
+[alice@dev1]$
+```
+:::
+
+
+## Scripts help us to repeat similar tasks many times
+
+Instead of manually retyping the commands manually, we can put them in
+a text file using our favorite text editor.  Here is a _shell_ script
+`hello.sh` that contain the above two commands:
+
+```sh
+echo "Hello world"
+date
+```
+
+We can run these two lines using the `bash` command:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ bash hello.sh
+Hello world
+Mon Nov 13 11:37:43 PM PST 2023
+
+[alice@dev1]$
+```
+:::
+
+
+We can call any number of times we'd like, e.g.
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ bash hello.sh
+Hello world
+Mon Nov 13 11:38:05 PM PST 2023
+
+[alice@dev1]$
+```
+:::
+
+
+## Tip: Comment you code for yourself and others
 
 All scripting language support adding _comments_ in the code.  It's an
 exellent way to make notes for your future self, for you
@@ -141,8 +193,8 @@ two years from now.  **Do yourself a favor and add such notes!**
 
 echo "Hello world"
 
-# Display current date in format yyyy-mm-dd
-date --iso-8601
+# Display current timestamp in format yyyy-mm-dd hh:mm:ss
+date +"%F %T"
 ```
 
 . . .
@@ -151,167 +203,243 @@ Comments are ignored when script is run, so still the same result;
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash hello.sh
+[alice@dev1]$ bash hello.sh
 Hello world
-2023-11-13
+2023-11-13 11:43:03
 ```
 :::
-
-
-
-# Running a script on a compute cluster
-
-"Running a script on a compute cluster"
-
-$<=$ similar to $=>$
-
-"Queue the script to be run on the next available compute nodes"
-
-<br/>
-<br/>
-
-We're going to focus on shell scripts and how to run them on a compute cluster.
-
 
 
 
 # Rule of thumb:<br>If it runs locally, it runs on the cluster
 
-## On the current machine
+
+## Running a script on a compute cluster
+
+
+> "Running a script on a compute cluster"
+
+_is similar to_
+
+> "Queue the script to be run on the next available compute node"
+
+<br/>
+<br/>
+
+We're going to focus on shell scripts and how to run them on a compute
+cluster.
+
+
+
+## Run on the current machine
+
+We can run the script manually at the command line:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash hello.sh
+[alice@dev1]$ bash hello.sh
 Hello world
-How are you?
+2023-11-13 11:45:14
 ```
 :::
 
+. . .
 
-## On the cluster
+We can run it multiple times:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qsub -cwd hello.sh
+[alice@dev1]$ bash hello.sh
+Hello world
+2023-11-13 11:45:32
+```
+:::
+
+. . .
+
+... over and over this way:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ bash hello.sh
+Hello world
+2023-11-13 11:45:51
+```
+:::
+
+. . .
+
+Note, the above run _sequentially_, one after each other.
+
+
+# Run on the cluster (of compute nodes)
+
+Instead of running it on the single machine we're logged into, we can
+run it on any of the hundreds of machines that is available.
+
+. . .
+
+To do this, we use `qsub` to **submit it to a job queue**:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ qsub -cwd hello.sh
 Your job 8522736 ("hello.sh") has been submitted
 ```
 :::
 
+. . .
+
+Here I use command-line option `-cwd` to tell it to run `hello.sh` in
+the current working directory.  **You almost always want to do this**.
+
+. . .
+
+Then we wait for it to get started. We can use `qstat` to see the
+_queue status_ of our jobs:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qstat
+[alice@dev1]$ qstat
 job-ID  prior   name     user   state submit/start at     queue              slots
 ----------------------------------------------------------------------------------
-8522736 0.00000 hello.sh alice  qw    11/02/2022 14:25:17                    1
+8522736 0.00000 hello.sh alice  qw    11/13/2023 11:37:17                    1
 ```
 :::
 
+Here `qw` means **queued** and **waiting** for a machine to become
+available.
 
-# Job is running - now we need to wait ...
+
+## Job is started by scheduler
+
+The job scheduler will send jobs in the queue to available
+machines. The waiting time depends on how many users and jobs are
+already running and queued. It also depends on how many resources your
+job need.
 
 . . .
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qstat
+[alice@dev1]$ qstat
 job-ID  prior   name     user   state submit/start at     queue              slots
 ----------------------------------------------------------------------------------
-8522736 0.07069 hello.sh alice  r     11/02/2022 14:28:02 long.q@msg-iogpu6  1        
+8522736 0.07069 hello.sh alice  r     11/13/2023 11:38:02 long.q@msg-iogpu6  1        
 ```
 :::
+
+Here `r` means **running**.  Now we need to wait ...
 
 . . .
 
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qstat
+[alice@dev1]$ qstat
 job-ID  prior   name     user   state submit/start at     queue              slots
 ----------------------------------------------------------------------------------
 
 ```
 :::
 
+Job is no longer listed, which means it finished.
 
-Hmm... where are the results?
+. . .
+
+But, now what? Where are the results?
 
 . . .
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ cat hello.sh.o8522736
+[alice@dev1]$ cat hello.sh.o8522736
 Hello world
-How are you?
+2023-11-13 11:46:54
 ```
 :::
 
 
 
-# Set default qsub options inside script
+## Tip: Set the qsub options inside script
 
-_A job scheduler directive_: A special formatted comment starting with `#$ ` followed by qsub options.
+_A job scheduler directive_: A specially formatted comment starting
+with `#$ ` followed by qsub options.
 
 ```sh
 #$ -cwd    # run in current working directory
 
 # This script says hello to the world
 # Author: Alice
-# Date: 2022-11-01
+# Date: 2023-11-12
 
 echo "Hello world"
-echo "How are you?"
+
+# Display current timestamp in format yyyy-mm-dd hh:mm:ss
+date +"%F %T"
 ```
 
 This way we can just do:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qsub hello.sh
+[alice@dev1]$ qsub hello.sh
 ```
 :::
 
 
-# Run an R script ~~on the job scheduler~~
+# Running an R script
+
+To run a non-shell script, for instance an R or a Python script, on a
+compute cluster, we need to create a little helper _shell_ script that
+calls our R or Python script.
+
+
+## Run an R script ~~on the job scheduler~~
 
 `random.R`:
 
 ```r
 # This R script outputs a random number
 # Author: Alice
-# Date: 2022-11-01
+# Date: 2023-11-12
 
 cat("A random number in [0,1]:", runif(1), "\n")
 ```
 
 . . .
 
+To run this from the command line, we can use `Rscript`:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ Rscript random.R
+[alice@dev1]$ Rscript random.R
 A random number in [0,1]: 0.09091985
 ```
 :::
 
 . . .
 
+Like shell scripts, we can run R scripts many times:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ Rscript random.R
+[alice@dev1]$ Rscript random.R
 A random number in [0,1]: 0.12491344
 ```
 :::
 
 
-# Run an R script ~~on the job scheduler~~ via a shell script
+## Run an R script ~~on the job scheduler~~ via a shell script
 
 `random.sh`:
 
 ```sh
 #$ -cwd    # run in current working directory
 
-# This script calls the R hello script
+# This shell script calls the random.R script
 # Author: Alice
-# Date: 2022-11-01
+# Date: 2023-11-12
 
 Rscript random.R
 ```
@@ -322,42 +450,86 @@ This we can call as:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash random.sh
+[alice@dev1]$ bash random.sh
 A random number in [0,1]: 0.4785869
 ```
 :::
 
 
-# Run an R script _on the job scheduler_
+## Run an R script _on the job scheduler_
 
-Submit `hello.sh` _twice_ to the job scheduler:
+With the `random.sh` wrapper script, we can now run our R script
+`random.R` on the cluster.
+
+For the sake of it, let's submit it _twice_ to the job scheduler:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qsub random.sh
+[alice@dev1]$ qsub random.sh
 Your job 8529912 ("random.sh") has been submitted
 
-{alice@dev1}$ qsub random.sh
+[alice@dev1]$ qsub random.sh
 Your job 8529913 ("random.sh") has been submitted
 ```
 :::
 
 . . .
 
+As usual, it will take some time before the jobs starts:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qstat
+[alice@dev1]$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+8529912 0.07069 random.sh alice qw    11/13/2023 11:28:02                    1        
+8529913 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1        
+```
+:::
+
+
+## Run an R script _on the job scheduler_
+
+But eventually, one starts:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+8529912 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        
+8529913 0.07069 random.sh alice qw    11/13/2023 11:28:04                    1        
 ```
 :::
 
 . . .
 
+And then the other:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ cat random.sh.o8529912
+[alice@dev1]$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+8529912 0.07069 random.sh alice r     11/13/2023 11:28:32 long.q@qb3-id3     1        
+8529913 0.07069 random.sh alice r     11/13/2023 11:28:54 long.q@msg-id19    1        
+```
+:::
+
+Note how the two jobs run on two different machines.
+
+
+## Run an R script _on the job scheduler_
+
+When the jobs are finished, any output generated by the script is
+stored in the corresponding `random.sh.o<job_id>` output file.
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+[alice@dev1]$ cat random.sh.o8529912
 A random number in [0,1]: 0.1704674
 
-{alice@dev1}$ cat random.sh.o8529913
+[alice@dev1]$ cat random.sh.o8529913
 A random number in [0,1]: 0.9229252 
 ```
 :::
@@ -366,7 +538,10 @@ A random number in [0,1]: 0.9229252
 
 # How to ask for help
 
-* <https://wynton.ucsf.edu/>{preview-link="true"}
+* Community Slack (**faster**)
+
+* Email to the cluster team (**slower**, because fewer people to
+  answer questions)
 
 * Rule #1: There is no such thing as "a stupid question"!!!
 
@@ -381,13 +556,34 @@ A random number in [0,1]: 0.9229252
 
 ## What makes a system administrator grumpy
 
-* Overload development nodes - or use more job resources than you request
+* Overload development nodes - or use more job resources than you
+  request
 
 * When you're sloppy or lazy - make sure to read help online, etc.
 
-* more seriously, sysadms are great folks too, so never hestiate to ask for help or pointers
+* More seriously, sysadms are great folks too, so never hestiate to
+  ask for help or pointers
 
 
+## Even better is to ask your peers
+
+* [Wynton](https://wynton.ucsf.edu/){preview-link="true"} has 1,800
+  users and [C4](https://www.c4.ucsf.edu/){preview-link="true"} has
+  300 users - many of them on Slack
+
+* The Slack channel is welcoming and friendly
+
+* Lots of users are willing to help out
+
+* There is almost certainly at least one other user who have the same
+  question as you
+
+* Sooner than you think, you might be the one helping someone else out
+
+* Again, there are no "silly" questions - it's only silly if you don't
+  ask!
+
+ 
      
 # Appendix (Random Slides)  {visibility="uncounted"}
 
@@ -405,11 +601,11 @@ We can run these two lines using:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ Rscript hello.R
+[alice@dev1]$ Rscript hello.R
 Hello world
 How are you?
 
-{alice@dev1}$
+[alice@dev1]$
 ```
 :::
 
@@ -427,11 +623,11 @@ We can run these two lines using:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ python hello.py
+[alice@dev1]$ python hello.py
 Hello world
 How are you?
 
-{alice@dev1}$
+[alice@dev1]$
 ```
 :::
 
@@ -442,7 +638,7 @@ Common filename extensions for scripting languages:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ ls -1 hello.*
+[alice@dev1]$ ls -1 hello.*
 hello.sh
 hello.R
 hello.py
@@ -455,7 +651,7 @@ The extension is non-critical - it’s only for us humans to keep track.  A scri
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash hello
+[alice@dev1]$ bash hello
 Hello world
 How are you?
 ```
@@ -479,7 +675,7 @@ The script still works as usual (because it is just a comment):
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash hello.sh
+[alice@dev1]$ bash hello.sh
 Hello world
 How are you?
 ```
@@ -492,12 +688,12 @@ Now, if we set the executable flag (`x`) in this file:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ ls -l hello.sh
+[alice@dev1]$ ls -l hello.sh
 -rw-r--r-- 1 alice alice 59 Oct  1 22:35 hello.sh
 
-{alice@dev1}$ chmod ugo+x hello.sh
+[alice@dev1]$ chmod ugo+x hello.sh
 
-{alice@dev1}$ ls -l hello.sh
+[alice@dev1]$ ls -l hello.sh
 -rwxr-xr-x 1 alice alice 59 Oct  1 22:35 hello.sh
 ```
 :::
@@ -506,7 +702,7 @@ we can call the script as:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ ./hello.sh
+[alice@dev1]$ ./hello.sh
 Hello world
 How are you?
 ```
@@ -521,7 +717,7 @@ To output to current working directory, use `-cwd`.
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ qsub -cwd hello.sh
+[alice@dev1]$ qsub -cwd hello.sh
 Your job 8522746 ("hello.sh") has been submitted
 ```
 :::
@@ -532,11 +728,11 @@ Then we keep checking `qstat` to see when it's done.
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ ls
+[alice@dev1]$ ls
 hello.sh
 hello.sh.o8522746
 
-{alice@dev1}$ cat hello.sh.o8522746
+[alice@dev1]$ cat hello.sh.o8522746
 Hello world
 How are you?
 ```
@@ -548,8 +744,8 @@ How are you?
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ mkdir ~/bin
-{alice@dev1}$ cp hello.sh ~/bin
+[alice@dev1]$ mkdir ~/bin
+[alice@dev1]$ cp hello.sh ~/bin
 $ ls -l ~/bin/hello.sh
 -rwxr-xr-x 1 alice alice 59 Oct  1 22:35 hello.sh
 ```
@@ -559,7 +755,7 @@ we can now call the script as:
 
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ bash ~/bin/hello.sh
+[alice@dev1]$ bash ~/bin/hello.sh
 Hello world
 How are you?
 ```
@@ -567,9 +763,11 @@ How are you?
 
 . . .
 
+And, because of the shebang, we don't have to call it via `bash`:
+
 ::: {.terminal}
 ```sh{code-line-numbers="false"}
-{alice@dev1}$ ~/bin/hello.sh
+[alice@dev1]$ ~/bin/hello.sh
 Hello world
 How are you?
 ```
