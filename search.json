@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "slides.html#on-the-current-machine",
+    "href": "slides.html#on-the-current-machine",
+    "title": "High-Performance Computing (HPC)",
+    "section": "On the current machine",
+    "text": "On the current machine\n\n{alice@dev1}$ bash hello.sh\nHello world\nHow are you?"
+  },
+  {
+    "objectID": "slides.html#on-the-cluster",
+    "href": "slides.html#on-the-cluster",
+    "title": "High-Performance Computing (HPC)",
+    "section": "On the cluster",
+    "text": "On the cluster\n\n{alice@dev1}$ qsub -cwd hello.sh\nYour job 8522736 (\"hello.sh\") has been submitted\n\n\n{alice@dev1}$ qstat\njob-ID  prior   name     user   state submit/start at     queue              slots\n----------------------------------------------------------------------------------\n8522736 0.00000 hello.sh alice  qw    11/02/2022 14:25:17                    1"
+  },
+  {
+    "objectID": "slides.html#what-makes-a-system-administrator-grumpy",
+    "href": "slides.html#what-makes-a-system-administrator-grumpy",
+    "title": "High-Performance Computing (HPC)",
+    "section": "What makes a system administrator grumpy",
+    "text": "What makes a system administrator grumpy\n\nOverload development nodes - or use more job resources than you request\nWhen you’re sloppy or lazy - make sure to read help online, etc.\nmore seriously, sysadms are great folks too, so never hestiate to ask for help or pointers"
+  }
+]
