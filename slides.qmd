@@ -183,7 +183,7 @@ Mon Nov 13 11:38:05 PM PST 2023
 ## Tip: Comment you code for yourself and others
 
 All scripting language support adding _comments_ in the code.  It's an
-exellent way to make notes for your future self, for you
+excellent way to make notes for your future self, for you
 collaborators, and for that researcher who will build on your work in
 two years from now.  **Do yourself a favor and add such notes!**
 
@@ -561,7 +561,7 @@ A random number in [0,1]: 0.9229252
 
 * When you're sloppy or lazy - make sure to read help online, etc.
 
-* More seriously, sysadms are great folks too, so never hestiate to
+* More seriously, sysadms are great folks too, so never hesitate to
   ask for help or pointers
 
 
