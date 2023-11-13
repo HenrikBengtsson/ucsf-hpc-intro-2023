@@ -75,7 +75,7 @@ width: 1100
 | Paying contributors | VIP priority               | dedicated machines         |
 | Software            | core + [shared](https://wynton.ucsf.edu/hpc/software/software-repositories.html){preview-link="true"} + DIY        | core + [shared](https://www.c4.ucsf.edu/software/software-repositories.html){preview-link="true"} + DIY        |
 | Linux               | Rocky 8                    | CentOS 7.9                 |
-| Backup              | no (on the roadmap)        | home directory (only)      |
+| Automatic backups   | no (on the roadmap)        | home directory (only)      |
 | GPUs                | yes                        | no                         |
 | Documentation       | <https://wynton.ucsf.edu/>{preview-link="true"} | <https://www.c4.ucsf.edu/>{preview-link="true"} |
 
