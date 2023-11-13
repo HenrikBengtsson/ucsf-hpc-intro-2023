@@ -1,0 +1,576 @@
+---
+title: "High-Performance Computing (HPC)"
+subtitle: "\"Large data analysis on someone else's computers\""
+author:
+  - name: Henrik Bengtsson
+    email: henrik.bengtsson@ucsf.edu
+    affiliations:
+      - name: (Epidemiology & Biostatistics, Wynton HPC, C4 HPC)
+  
+format:
+  revealjs: 
+    preview-links: auto
+    theme: [default, custom.scss]
+
+width: 1100
+---
+
+
+# Goals for today
+
+* For you to know it is not that hard to get started
+
+
+<!-- A 25-minute presentation on 2023-11-13 -->
+
+
+
+# Why do we use a compute cluster?
+
+* Running out of memory on local computer                 &nbsp;&nbsp; 👈 today
+
+* Analysis takes too long on local computer               &nbsp;&nbsp; 👈 today
+
+* Too large data files to host on local computer
+
+* Makes it easier to collaborate within the group, e.g. common data folder
+
+* We can leave it running for days
+
+* What's your reason?
+
+
+# What is a compute cluster?
+
+* A very large number of Linux computers                  &nbsp;&nbsp; 👈 today
+
+* All computers have identical configuration and software &nbsp;&nbsp; 👈 today
+
+* All computers have access to a shared file system
+
+* Multiple users are using the cluster at the same time
+
+* Not magic!
+
+* Higher total throughput - not necessarily lower latency
+
+
+
+
+# Two compute clusters at the UCSF
+
+|                     | Wynton HPC                 | C4                         |
+|:--------------------|:---------------------------|:---------------------------|
+| Since               | 2018                       | 2020                       |
+| For whom?           | All of UCSF                | Cancer Center affiliates   |
+| Number of users     | ~1,800                     | ~300                       |
+| Number of computers | ~500                       | ~40                        |
+| Number of cores     | ~17,500                    | ~2,800                     |
+| Memory (RAM)        | 48 -- 1,512 GiB RAM        | 32 -- 1,024 GiB RAM        |
+| Free disk space     | 500 GB/user                | 1,000 GB/user              |
+| Communal computers  | 100%                       | 25%                        |
+| Paying contributors | VIP priority               | dedicated machines         |
+| Software            | core + shared + DIY        | core + shared + DIY        |
+| Linux               | Rocky 8                    | CentOS 7.9                 |
+| Backup              | no (on the roadmap)        | home directory (only)      |
+| GPUs                | yes                        | no                         |
+| Documentation       | <https://wynton.ucsf.edu/>{preview-link="true"} | <https://www.c4.ucsf.edu/>{preview-link="true"} |
+
+
+
+# Typical workflow using a compute cluster
+
+1. Log in to compute cluster
+2. Continue by logging in to a development node
+3. Go to project folder
+4. Edit scripts
+5. Submit one or more scripts to job queue
+6. Wait until done
+7. Look at produced files and logs
+
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{ab@notebook}$ ssh alice@log1.wynton.ucsf.edu
+{alice@log1}$ ssh qb3-dev1
+{alice@dev1}$ cd /path/to/amazing_project/
+{alice@dev1}$ emacs analysis.sh
+{alice@dev1}$ qsub analysis.sh
+{alice@dev1}$ qstat
+...
+{alice@dev1}$ cat analysis.o90303
+```
+:::
+
+
+# Scripts are text files with commands
+
+* Scripts are text files with commands that are executed line by line
+* You can edit scripts in a text editor
+* Scripts are run by an interpreter, e.g. Bash, R, Python, ...
+
+Example: A _shell_ script `hello.sh` containing:
+
+```sh
+echo "Hello world"
+echo "How are you?"
+```
+
+We can run these two lines using:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash hello.sh
+Hello world
+How are you?
+
+{alice@dev1}$
+```
+:::
+
+# Comment you code for yourself and others
+
+All scripting language support adding _comments_ in the code.  It's an
+exellent way to make notes for your future self, for you
+collaborators, and for that researcher who will build on your work in
+two years from now.  **Do yourself a favor and add such notes!**
+
+```sh
+# This script says hello to the world
+# Author: Alice
+
+echo "Hello world"
+
+# Display current date in format yyyy-mm-dd
+date --iso-8601
+```
+
+. . .
+
+Comments are ignored when script is run, so still the same result;
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash hello.sh
+Hello world
+2023-11-13
+```
+:::
+
+
+
+# Running a script on a compute cluster
+
+"Running a script on a compute cluster"
+
+$<=$ similar to $=>$
+
+"Queue the script to be run on the next available compute nodes"
+
+<br/>
+<br/>
+
+We're going to focus on shell scripts and how to run them on a compute cluster.
+
+
+
+
+# Rule of thumb:<br>If it runs locally, it runs on the cluster
+
+## On the current machine
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash hello.sh
+Hello world
+How are you?
+```
+:::
+
+
+## On the cluster
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qsub -cwd hello.sh
+Your job 8522736 ("hello.sh") has been submitted
+```
+:::
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+8522736 0.00000 hello.sh alice  qw    11/02/2022 14:25:17                    1
+```
+:::
+
+
+# Job is running - now we need to wait ...
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+8522736 0.07069 hello.sh alice  r     11/02/2022 14:28:02 long.q@msg-iogpu6  1        
+```
+:::
+
+. . .
+
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qstat
+job-ID  prior   name     user   state submit/start at     queue              slots
+----------------------------------------------------------------------------------
+
+```
+:::
+
+
+Hmm... where are the results?
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ cat hello.sh.o8522736
+Hello world
+How are you?
+```
+:::
+
+
+
+# Set default qsub options inside script
+
+_A job scheduler directive_: A special formatted comment starting with `#$ ` followed by qsub options.
+
+```sh
+#$ -cwd    # run in current working directory
+
+# This script says hello to the world
+# Author: Alice
+# Date: 2022-11-01
+
+echo "Hello world"
+echo "How are you?"
+```
+
+This way we can just do:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qsub hello.sh
+```
+:::
+
+
+# Run an R script ~~on the job scheduler~~
+
+`random.R`:
+
+```r
+# This R script outputs a random number
+# Author: Alice
+# Date: 2022-11-01
+
+cat("A random number in [0,1]:", runif(1), "\n")
+```
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ Rscript random.R
+A random number in [0,1]: 0.09091985
+```
+:::
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ Rscript random.R
+A random number in [0,1]: 0.12491344
+```
+:::
+
+
+# Run an R script ~~on the job scheduler~~ via a shell script
+
+`random.sh`:
+
+```sh
+#$ -cwd    # run in current working directory
+
+# This script calls the R hello script
+# Author: Alice
+# Date: 2022-11-01
+
+Rscript random.R
+```
+
+. . .
+
+This we can call as:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash random.sh
+A random number in [0,1]: 0.4785869
+```
+:::
+
+
+# Run an R script _on the job scheduler_
+
+Submit `hello.sh` _twice_ to the job scheduler:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qsub random.sh
+Your job 8529912 ("random.sh") has been submitted
+
+{alice@dev1}$ qsub random.sh
+Your job 8529913 ("random.sh") has been submitted
+```
+:::
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qstat
+```
+:::
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ cat random.sh.o8529912
+A random number in [0,1]: 0.1704674
+
+{alice@dev1}$ cat random.sh.o8529913
+A random number in [0,1]: 0.9229252 
+```
+:::
+
+
+
+# How to ask for help
+
+* <https://wynton.ucsf.edu/>{preview-link="true"}
+
+* Rule #1: There is no such thing as "a stupid question"!!!
+
+* Help the helper help you
+
+* Better with too much details than too little
+
+* It is really hard to destroy things for others  
+  (⚠️ but, you can `rm` your own files and files in shared folders)
+
+. . .
+
+## What makes a system administrator grumpy
+
+* Overload development nodes - or use more job resources than you request
+
+* When you're sloppy or lazy - make sure to read help online, etc.
+
+* more seriously, sysadms are great folks too, so never hestiate to ask for help or pointers
+
+
+     
+# Appendix (Random Slides)  {visibility="uncounted"}
+
+
+# A1. Scripts - R  {visibility="uncounted"}
+
+Example: An _R_ script `hello.R` containing:
+
+```txt
+cat("Hello world\n")
+cat("How are you?\n")
+```
+
+We can run these two lines using:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ Rscript hello.R
+Hello world
+How are you?
+
+{alice@dev1}$
+```
+:::
+
+
+# A1. Scripts - Python  {visibility="uncounted"}
+
+Example: A Python script `hello.py` containing:
+
+```txt
+print("Hello world\n")
+print("How are you?\n")
+```
+
+We can run these two lines using:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ python hello.py
+Hello world
+How are you?
+
+{alice@dev1}$
+```
+:::
+
+
+# A1. The filename extension reveals the scripting language  {visibility="uncounted"}
+
+Common filename extensions for scripting languages:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ ls -1 hello.*
+hello.sh
+hello.R
+hello.py
+hello.pl
+```
+:::
+
+
+The extension is non-critical - it’s only for us humans to keep track.  A script could be name just `hello`, but then we have to peek into the file to figure out what scripting language is used before we can call it;
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash hello
+Hello world
+How are you?
+```
+:::
+
+
+# A2. Shebangs - make your script look like any other program  {visibility="uncounted"}
+
+A shebang is a script _comment_ at the first line with a specific format:
+
+```sh
+# !/usr/bin/env bash
+
+echo "Hello world"
+echo "How are you?"
+```
+
+The "-bang" in "shebang" is because `!` is pronounced "bang" in the compute world.
+
+The script still works as usual (because it is just a comment):
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash hello.sh
+Hello world
+How are you?
+```
+:::
+
+
+# A2. Shebangs - make your script look like any other program  {visibility="uncounted"}
+
+Now, if we set the executable flag (`x`) in this file:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ ls -l hello.sh
+-rw-r--r-- 1 alice alice 59 Oct  1 22:35 hello.sh
+
+{alice@dev1}$ chmod ugo+x hello.sh
+
+{alice@dev1}$ ls -l hello.sh
+-rwxr-xr-x 1 alice alice 59 Oct  1 22:35 hello.sh
+```
+:::
+
+we can call the script as:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ ./hello.sh
+Hello world
+How are you?
+```
+:::
+
+
+# A3. When run via scheduler, scripts output to files  {visibility="uncounted"}
+
+* Wynton HPC: By default, output files are saved to your home directory (`~`)
+
+To output to current working directory, use `-cwd`.
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ qsub -cwd hello.sh
+Your job 8522746 ("hello.sh") has been submitted
+```
+:::
+
+Then we keep checking `qstat` to see when it's done.
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ ls
+hello.sh
+hello.sh.o8522746
+
+{alice@dev1}$ cat hello.sh.o8522746
+Hello world
+How are you?
+```
+:::
+
+
+
+# A4. Put your common scripts in ~/bin/  {visibility="uncounted"}
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ mkdir ~/bin
+{alice@dev1}$ cp hello.sh ~/bin
+$ ls -l ~/bin/hello.sh
+-rwxr-xr-x 1 alice alice 59 Oct  1 22:35 hello.sh
+```
+:::
+
+we can now call the script as:
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ bash ~/bin/hello.sh
+Hello world
+How are you?
+```
+:::
+
+. . .
+
+::: {.terminal}
+```sh{code-line-numbers="false"}
+{alice@dev1}$ ~/bin/hello.sh
+Hello world
+How are you?
+```
+:::

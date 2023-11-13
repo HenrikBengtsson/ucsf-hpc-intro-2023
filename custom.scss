@@ -1,0 +1,35 @@
+/*-- scss:defaults --*/
+
+/*
+ $body-bg: #191919;
+$body-color: #fff;
+$link-color: #42affa;
+*/
+
+$presentation-font-size-root: 30px;  /* default: 40px   */
+$presentation-h1-font-size: 2.0em;   /* default: 2.5em  */
+$code-block-font-size: 0.70em;       /* default: 0.55em */
+                           
+/*-- scss:rules --*/
+
+.reveal .terminal pre.sourceCode code {
+    background-color: #333;
+}
+
+.reveal .terminal pre.sourceCode span {
+    color: #fff;
+    font-weight: bold;
+}
+
+
+.reveal .slide blockquote {
+    border-left: 3px solid $text-muted;
+    padding-left: 0.5em;
+}
+
+.reveal table th, .reveal table td {
+    padding-top: 0em;
+    padding-bottom: 0em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
