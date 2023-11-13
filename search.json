@@ -4,7 +4,7 @@
     "href": "slides.html#two-compute-clusters-at-the-ucsf",
     "title": "High-Performance Computing (HPC)",
     "section": "Two compute clusters at the UCSF",
-    "text": "Two compute clusters at the UCSF\n\n\n\n\nWynton HPC\nC4\n\n\n\n\nSince\n2018\n2020\n\n\nFor whom?\nAll of UCSF\nCancer Center affiliates\n\n\nNumber of users\n~1,800\n~300\n\n\nNumber of computers\n~500\n~40\n\n\nNumber of cores\n~17,500\n~2,800\n\n\nMemory (RAM)\n48 – 1,512 GiB RAM\n32 – 1,024 GiB RAM\n\n\nFree disk space\n500 GB/user\n1,000 GB/user\n\n\nCommunal computers\n100%\n25%\n\n\nPaying contributors\nVIP priority\ndedicated machines\n\n\nSoftware\ncore + shared + DIY\ncore + shared + DIY\n\n\nLinux\nRocky 8\nCentOS 7.9\n\n\nBackup\nno (on the roadmap)\nhome directory (only)\n\n\nGPUs\nyes\nno\n\n\nDocumentation\nhttps://wynton.ucsf.edu/\nhttps://www.c4.ucsf.edu/"
+    "text": "Two compute clusters at the UCSF\n\n\n\n\nWynton HPC\nC4\n\n\n\n\nSince\n2018\n2020\n\n\nFor whom?\nAll of UCSF\nCancer Center affiliates\n\n\nNumber of users\n~1,800\n~300\n\n\nNumber of computers\n~500\n~40\n\n\nNumber of cores\n~17,500\n~2,800\n\n\nMemory (RAM)\n48 – 1,512 GiB RAM\n32 – 1,024 GiB RAM\n\n\nFree disk space\n500 GB/user\n1,000 GB/user\n\n\nCommunal computers\n100%\n25%\n\n\nPaying contributors\nVIP priority\ndedicated machines\n\n\nSoftware\ncore + shared + DIY\ncore + shared + DIY\n\n\nLinux\nRocky 8\nCentOS 7.9\n\n\nAutomatic backups\nno (on the roadmap)\nhome directory (only)\n\n\nGPUs\nyes\nno\n\n\nDocumentation\nhttps://wynton.ucsf.edu/\nhttps://www.c4.ucsf.edu/"
   },
   {
     "objectID": "slides.html#typical-workflow-using-a-compute-cluster",
